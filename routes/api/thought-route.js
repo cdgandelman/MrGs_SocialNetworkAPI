@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Thought, User } = require('../../models/thoughts');
+const { Thought, User } = require('../../models');
 
 // GET all thoughts
 router.get('/', async (req, res) => {
@@ -48,8 +48,9 @@ router.put('/:id', async (req, res) => {
 // DELETE to remove a thought by its _id
 router.delete('/:id', async (req, res) => {
   try {
+    
     const thought = await Thought.findByIdAndDelete(req.params.id);
-    const user = await User.findById(thought.userId);
+    const user = await User.findById(thought.username);
     user.thoughts.pull(thought._id);
     await user.save();
     res.status(200).json({ message: 'Thought deleted!' });
